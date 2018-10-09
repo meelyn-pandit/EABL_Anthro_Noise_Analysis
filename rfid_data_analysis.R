@@ -19,7 +19,7 @@ names(animal_index) = c("animal_id", "species","age", "sex") #renaming the colum
 
 clean_data = check_ids(data, ids = animal_index) #checking the tags read by the reader against the list of the known RFID tags. You will get tags that do not show up in animal_index. You will need to enter these tag IDs into the animal_index csv file and label them as error or wand.
 
-v <- visits(clean_data, bw = 3) #between reads is 5 min. will need to discuss this. should try to base time between visits on previous bluebird data.
+v <- visits(clean_data, bw = 300) #between reads is 5 min. will need to discuss this. should try to base time between visits on previous bluebird data.
 ARF2_F_v = filter(v,animal_id == "01103F3A27")
 head(v)
 
@@ -31,7 +31,7 @@ visit_summary <- v %>%
             n_days = length(unique(date)),
             mean_visit_length = mean(as.numeric(difftime(end, start, units = "sec"))))
 visit_summary
-visit_summary$mean_visit_rate = (visit_summary$mean_visit_length/visit_summary$n_days)
+visit_summary$mean_visit_rate = (visit_summary$n_visits/visit_summary$n_days)
 visit_summary$treatment = rep("control",nrow(visit_summary))
 write.table(visit_summary, file = "rfid_visit_summaries.csv", append = TRUE, sep = ",", col.names = FALSE)
 
